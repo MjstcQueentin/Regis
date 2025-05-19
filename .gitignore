@@ -1,0 +1,10 @@
+# Visual Studio Code configuration files
+.vscode/
+
+# Project files
+projects/*
+!projects/.gitkeep
+
+# Apache configuration
+.htaccess
+.htpasswd
