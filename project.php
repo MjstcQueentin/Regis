@@ -29,14 +29,20 @@ header('Last-Modified: ' . date('D, d M Y H:i:s', filemtime($path)) . ' GMT');
             <h2>
                 <?= htmlspecialchars($project->title) ?>
             </h2>
-            <div class="d-flex flex-row gap-2 align-items-baseline">
-                <span>Tester le lecteur vidéo</span>
-                <button class="btn btn-sm btn-outline-primary" data-trigger="video-play" data-video="/assets/test-video.mp4">
-                    <i class="bi bi-play"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-secondary" data-trigger="video-stop">
-                    <i class="bi bi-stop"></i>
-                </button>
+            <div>
+                <div class="d-flex flex-row gap-1 align-items-baseline justify-content-end mb-1">
+                    <button class="btn btn-sm btn-outline-primary" data-trigger="video-play" data-video="/assets/test-video.mp4">
+                        <i class="bi bi-play"></i> Vidéo de test
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" data-trigger="video-stop">
+                        <i class="bi bi-stop"></i>
+                    </button>
+                </div>
+                <div class="d-flex flex-row gap-1 align-items-baseline justify-content-end">
+                    <button class="btn btn-sm btn-outline-danger" data-trigger="video-stop reset-all">
+                        <i class="bi bi-stop"></i> Remise à zéro
+                    </button>
+                </div>
             </div>
         </div>
     </section>
@@ -67,7 +73,7 @@ header('Last-Modified: ' . date('D, d M Y H:i:s', filemtime($path)) . ' GMT');
                                         Fichier invalide !
                                     </div>
                                 <?php elseif (substr($element->attributes()['type'], 0, stripos($element->attributes()['type'], '/')) == "audio"): ?>
-                                    <audio controls class="w-100" preload="auto" <?= !empty($element->attributes()['loop']) ? 'loop' : '' ?>
+                                    <audio controls class="w-100" preload="none" <?= !empty($element->attributes()['loop']) ? 'loop' : '' ?>
                                         <?= !empty($element->attributes()['volume']) ? 'volume="' . $element->attributes()['volume'] . '"' : '' ?>
                                         src="/projects/<?= htmlspecialchars($dir) ?>/<?= htmlspecialchars($element->attributes()['src']) ?>"></audio>
                                 <?php else: ?>
@@ -100,6 +106,7 @@ header('Last-Modified: ' . date('D, d M Y H:i:s', filemtime($path)) . ' GMT');
             audio.volume = audio.getAttribute('volume');
         });
     </script>
+    <script defer src="/assets/scripts/projectplayer.js"></script>
     <script defer src="/assets/scripts/videoplayer-controls.js"></script>
 </body>
 

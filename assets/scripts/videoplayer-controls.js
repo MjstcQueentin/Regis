@@ -30,17 +30,17 @@ function stopVideo() {
     videoElement.classList.add("d-none");
 }
 
-var showVideoPlayerBtns = document.querySelectorAll('button[data-trigger="video-show-player"]');
+var showVideoPlayerBtns = document.querySelectorAll('button[data-trigger*="video-show-player"]');
 for (let i = 0; i < showVideoPlayerBtns.length; i++) {
     showVideoPlayerBtns.item(i).addEventListener("click", e => showVideoPlayer());
 }
 
-var playVideoBtns = document.querySelectorAll('button[data-trigger="video-play"]');
+var playVideoBtns = document.querySelectorAll('button[data-trigger*="video-play"]');
 for (let i = 0; i < playVideoBtns.length; i++) {
     playVideoBtns.item(i).addEventListener("click", e => setVideo(playVideoBtns.item(i).getAttribute("data-video"), playVideoBtns.item(i).getAttribute("data-loop")));
 }
 
-var stopVideoBtns = document.querySelectorAll('button[data-trigger="video-stop"]');
+var stopVideoBtns = document.querySelectorAll('button[data-trigger*="video-stop"]');
 for (let i = 0; i < stopVideoBtns.length; i++) {
     stopVideoBtns.item(i).addEventListener("click", e => stopVideo());
 }
