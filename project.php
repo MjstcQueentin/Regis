@@ -19,6 +19,13 @@ header('Last-Modified: ' . date('D, d M Y H:i:s', filemtime($path)) . ' GMT');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($project->title) ?> | Régis</title>
     <?php include __DIR__ . '/assets/partials/headlinks.php'; ?>
+
+    <!-- Précharger les vidéos -->
+    <?php foreach ($project->elements->element as $element): ?>
+        <?php if (substr($element->attributes()['type'], 0, stripos($element->attributes()['type'], '/')) == "video"): ?>
+            <link rel="prefetch" href="/projects/<?= htmlspecialchars($dir) ?>/<?= htmlspecialchars($element->attributes()['src']) ?>">
+        <?php endif; ?>
+    <?php endforeach; ?>
 </head>
 
 <body data-bs-theme="<?= $_COOKIE['bs-theme'] ?? 'light' ?>" autoshow-video-player>
@@ -73,7 +80,7 @@ header('Last-Modified: ' . date('D, d M Y H:i:s', filemtime($path)) . ' GMT');
                                         Fichier invalide !
                                     </div>
                                 <?php elseif (substr($element->attributes()['type'], 0, stripos($element->attributes()['type'], '/')) == "audio"): ?>
-                                    <audio controls class="w-100" preload="none" <?= !empty($element->attributes()['loop']) ? 'loop' : '' ?>
+                                    <audio controls class="w-100" preload="auto" <?= !empty($element->attributes()['loop']) ? 'loop' : '' ?>
                                         <?= !empty($element->attributes()['volume']) ? 'volume="' . $element->attributes()['volume'] . '"' : '' ?>
                                         src="/projects/<?= htmlspecialchars($dir) ?>/<?= htmlspecialchars($element->attributes()['src']) ?>"></audio>
                                 <?php else: ?>
