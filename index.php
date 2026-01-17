@@ -52,8 +52,11 @@ $dirScan = array_filter($dirScan, function ($item) use($projectsDir) {
                                 <a class="btn btn-sm btn-link text-decoration-none" href="project.php?dir=<?= urlencode($item) ?>" title="Ouvrir le projet">
                                     <i class="bi bi-folder2-open"></i> Ouvrir
                                 </a>
-                                <a class="btn btn-sm btn-link text-decoration-none" href="editor.php?action=edit&name=<?= urlencode($item) ?>" title="Ouvrir le projet">
-                                    <i class="bi bi-pencil"></i> Modifier
+                                <a class="btn btn-sm btn-link text-decoration-none" href="edit-project.php?action=edit&name=<?= urlencode($item) ?>" title="Modifier le projet">
+                                    <i class="bi bi-pencil"></i> Modifier...
+                                </a>
+                                <a class="btn btn-sm btn-link text-decoration-none" href="edit-medias.php?name=<?= urlencode($item) ?>" title="Gérer les médias du projet">
+                                    <i class="bi bi-collection-play"></i> Médias...
                                 </a>
                             </td>
                         </tr>
@@ -66,7 +69,7 @@ $dirScan = array_filter($dirScan, function ($item) use($projectsDir) {
     <div class="modal fade" id="newProjectModal" tabindex="-1" aria-labelledby="newProjectModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="/editor.php" method="GET">
+                <form action="/edit-project.php" method="GET">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="newProjectModalLabel">Créer un nouveau projet</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

@@ -11,12 +11,8 @@
 require_once __DIR__ . '/core/utils.php';
 
 $projectName = $_GET['name'];
-if (empty($projectName)) {
-    http_response_code(303);
-    header('Location: /index.php');
-    exit;
-}
-$projectDir = __DIR__ . '/projects/' . projectNameToDirectoryName($projectName);
+requireValidProjectName($projectName);
+$projectDir = projectDirectoryPath($projectName);
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $message = "Aucune action réalisée.";
@@ -68,7 +64,7 @@ $audios = scandir($projectDir . '/audio');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier les médias du projet "<?= htmlspecialchars($projectName) ?>"</title>
+    <title>Gérer les médias du projet "<?= htmlspecialchars($projectName) ?>"</title>
     <?php include __DIR__ . '/assets/partials/headlinks.php'; ?>
 </head>
 
@@ -76,18 +72,35 @@ $audios = scandir($projectDir . '/audio');
     <?php include __DIR__ . '/assets/partials/header.php'; ?>
 
     <section class="container">
-        <h1>Médias du projet "<?= htmlspecialchars($projectName) ?>"</h1>
+        <h2>Gérer les médias du projet "<?= htmlspecialchars($projectName) ?>"</h2>
     </section>
 
     <?php if (!empty($message)): ?>
-        <section class="container mb-3">
+        <section class="container mt-3">
             <div class="alert alert-info" role="alert">
                 <?= htmlspecialchars($message) ?>
             </div>
         </section>
     <?php endif; ?>
 
-    <section class="container">
+    <section class="container mt-3">
+        <div class="border rounded p-4">
+            <h2>Ajouter un média</h2>
+
+            <form method="POST" action="" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="upload">
+
+                <div class="mb-3">
+                    <label for="mediaFile" class="form-label">Fichier média</label>
+                    <input class="form-control" type="file" id="mediaFile" name="file" accept="video/*,audio/*" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Ajouter le média</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="container mt-3">
         <div class="row gap-1">
             <div class="table-responsive border rounded col p-0">
                 <table class="table">
@@ -145,23 +158,6 @@ $audios = scandir($projectDir . '/audio');
                     </tbody>
                 </table>
             </div>
-        </div>
-    </section>
-
-    <section class="container mt-5">
-        <div class="border rounded p-4">
-            <h2>Ajouter un média</h2>
-
-            <form method="POST" action="" enctype="multipart/form-data">
-                <input type="hidden" name="action" value="upload">
-
-                <div class="mb-3">
-                    <label for="mediaFile" class="form-label">Fichier média</label>
-                    <input class="form-control" type="file" id="mediaFile" name="file" accept="video/*,audio/*" required>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Ajouter le média</button>
-            </form>
         </div>
     </section>
 
