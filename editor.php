@@ -54,12 +54,17 @@ switch ($_GET['action']) {
 <body data-bs-theme="<?= $_COOKIE['bs-theme'] ?? 'light' ?>">
     <?php include __DIR__ . '/assets/partials/header.php'; ?>
 
+    <section class="container mt-3">
+        <h2>Modifier le projet "<?= htmlspecialchars($project->title) ?>"</h2>
+        <a href="/edit-medias.php?name=<?= urlencode($_GET['name']) ?>" class="btn btn-primary m-3">Modifier les médias du projet</a>
+    </section>
+
     <section>
         <div class="container">
             <pre><?php print_r($project) ?></pre>
         </div>
     </section>
-    
+
     <?php include __DIR__ . '/assets/partials/footer.php'; ?>
 </body>
 
