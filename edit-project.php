@@ -15,6 +15,7 @@ $projectDirName = projectNameToDirectoryName($projectName);
 $projectDirPath = projectDirectoryPath($projectName);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // L'utilisateur modifie le projet
     switch ($_POST["action"]) {
         case "add-element":
             break;
@@ -27,8 +28,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     );
     exit();
 } else {
+    // Consultation de la page d'édition du projet
     switch ($_GET["action"]) {
         case "add":
+            // Création du projet
             mkdir($projectDirPath);
             mkdir($projectDirPath . "/audio");
             mkdir($projectDirPath . "/video");
@@ -44,6 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             );
             return;
         case "edit":
+            // Modification du projet
             requireValidProjectName($projectName);
 
             $str = file_get_contents($projectDirPath . "/project.xml");
