@@ -1,5 +1,4 @@
 <?php
-
 /**
  * edit-project.php
  * ---
@@ -8,65 +7,34 @@
  * @license MIT
  */
 
-require_once __DIR__ . "/core/utils.php";
+require_once __DIR__ . "/core/autoload.php";
+
+use LesMajesticiels\Regis\Project;
+use LesMajesticiels\Regis\ProjectElement;
 
 $projectName = $_REQUEST["name"];
-$projectDirName = projectNameToDirectoryName($projectName);
-$projectDirPath = projectDirectoryPath($projectName);
+$projectTitle = $_REQUEST["title"] ?? null;
+$project = new Project($projectName, $projectTitle);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // L'utilisateur modifie le projet
     switch ($_POST["action"]) {
         case "add-element":
+            $elementParameters = [
+                "src" => $_POST["src"],
+                "type" => mime_content_type($project->getPath($_POST["src"])),
+                "scene" => $_POST["scene"],
+                "title" => $_POST["title"],
+                "description" => $_POST["description"],
+                "hint" => $_POST["hint"],
+            ];
+            $project->addElement(new ProjectElement($elementParameters));
             break;
     }
 
     http_response_code(303);
-    header(
-        "Location: /edit-project.php?action=edit&name=" .
-            urlencode($projectName),
-    );
+    header("Location: /edit-project.php?action=edit&name=" . urlencode($projectName));
     exit();
-} else {
-    // Consultation de la page d'édition du projet
-    switch ($_GET["action"]) {
-        case "add":
-            // Création du projet
-            mkdir($projectDirPath);
-            mkdir($projectDirPath . "/audio");
-            mkdir($projectDirPath . "/video");
-            file_put_contents(
-                $projectDirPath . "/project.xml",
-                '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><project><title>' .
-                    htmlentities($projectName) .
-                    "</title><elements></elements></project>",
-            );
-            header(
-                "Location: /edit-project.php?action=edit&name=" .
-                    urlencode($projectDirName),
-            );
-            return;
-        case "edit":
-            // Modification du projet
-            requireValidProjectName($projectName);
-
-            $str = file_get_contents($projectDirPath . "/project.xml");
-            $project = new SimpleXMLElement($str);
-            $videos = scandir($projectDirPath . "/video");
-            $audios = scandir($projectDirPath . "/audio");
-
-            $videos = array_filter($videos, function ($item) {
-                return substr($item, 0, 1) != ".";
-            });
-            $audios = array_filter($audios, function ($item) {
-                return substr($item, 0, 1) != ".";
-            });
-            break;
-        default:
-            http_response_code(303);
-            header("Location: /index.php");
-            exit();
-    }
 }
 ?>
 
@@ -76,30 +44,66 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier <?= htmlspecialchars($project->title) ?> | Régis</title>
+    <title>Modifier <?= htmlspecialchars($project->getTitle()) ?> | Régis</title>
     <?php include __DIR__ . "/assets/partials/headlinks.php"; ?>
 </head>
 
 <body data-bs-theme="<?= $_COOKIE["bs-theme"] ?? "light" ?>">
     <?php include __DIR__ . "/assets/partials/header.php"; ?>
 
-    <section class="container">
-        <h2>Modifier le projet "<?= htmlspecialchars($project->title) ?>"</h2>
-        <a href="/edit-medias.php?name=<?= urlencode(
-            $_GET["name"],
-        ) ?>" class="btn btn-primary">Modifier les médias du projet</a>
+    <section class="container mb-3">
+        <h2>Modifier le projet "<?= htmlspecialchars($project->getTitle()) ?>"</h2>
 
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addElementModal">
-            Ajouter un élément
-        </button>
+        <a href="/edit-medias.php?name=<?= urlencode($_GET["name"]) ?>" class="btn btn-primary">
+            Modifier les médias du projet
+        </a>
+
+        <?php if (!empty($project->getMedias())): ?>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addElementModal">
+                Ajouter un élément
+            </button>
+        <?php endif; ?>
     </section>
 
     <section class="container">
-        <?php foreach ($project->elements->element as $element): ?>
-            <div>Element here</div>
-        <?php endforeach; ?>
-        <?php if (empty($project->elements->element)): ?>
+        <?php if (empty($project->getElements())): ?>
             <div class="alert alert-info">Aucun élément ajouté pour le moment.</div>
+        <?php else: ?>
+            <?php foreach ($project->getElements() as $elementIndex => $element): ?>
+            <?php $elementArray = $element->__toArray(); ?>
+                <div class="d-flex flex-row gap-1 border rounded p-2 mb-2">
+                    <div class="flex-grow-1">
+                        <strong><?= htmlspecialchars($elementArray["title"]) ?></strong><br>
+                        <em>Scène <?= htmlspecialchars($elementArray["scene"]) ?></em><br>
+                        <p><?= nl2br(htmlspecialchars($elementArray["description"])) ?></p>
+                        <p><?= nl2br(htmlspecialchars($elementArray["hint"])) ?></p>
+                    </div>
+                    <div class="d-flex flex-row gap-1">
+                        <form action="" method="POST">
+                            <input type="hidden" name="action" value="move-element-up">
+                            <input type="hidden" name="index" value="<?= $elementIndex ?>">
+                            <button type="submit" class="btn btn-primary" title="Déplacer vers le haut">
+                                <i class="bi bi-arrow-up"></i>
+                            </button>
+                        </form>
+                        <form action="" method="POST">
+                            <input type="hidden" name="action" value="move-element-down">
+                            <input type="hidden" name="index" value="<?= $elementIndex ?>">
+                            <button type="submit" class="btn btn-primary" title="Déplacer vers le bas">
+                                <i class="bi bi-arrow-down"></i>
+                            </button>
+                        </form>
+
+                        <form action="" method="POST">
+                            <input type="hidden" name="action" value="delete-element">
+                            <input type="hidden" name="index" value="<?= $elementIndex ?>">
+                            <button type="submit" class="btn btn-danger" title="Supprimer cet élément">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         <?php endif; ?>
     </section>
 
@@ -111,25 +115,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <h1 class="modal-title fs-5" id="addElementModalLabel">Ajouter un élément</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form action="" method="POST">
+                <form action="" method="POST">
+                    <input type="hidden" name="action" value="add-element">
+
+                    <div class="modal-body">
                         <div class="mb-3">
                             <label for="srcSelect" class="form-label">Fichier à utiliser</label>
                             <select class="form-select" id="srcSelect" name="src">
                                 <optgroup label="Vidéos">
-                                    <?php foreach ($videos as $video): ?>
-                                        <option value="video/<?= htmlspecialchars(
-                                            $video,
-                                        ) ?>">
+                                    <?php foreach ($project->getMedias("video") as $video): ?>
+                                        <option value="<?= htmlspecialchars($video) ?>">
                                             <?= htmlspecialchars($video) ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </optgroup>
                                 <optgroup label="Audios">
-                                    <?php foreach ($audios as $audio): ?>
-                                        <option value="audio/<?= htmlspecialchars(
-                                            $audio,
-                                        ) ?>">
+                                    <?php foreach ($project->getMedias("audio") as $audio): ?>
+                                        <option value="<?= htmlspecialchars($audio) ?>">
                                             <?= htmlspecialchars($audio) ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -151,21 +153,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <label for="descriptionInput" class="form-label">Description</label>
                             <textarea class="form-control" id="descriptionInput" name="description" required></textarea>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="button" class="btn btn-primary">Enregistrer</button>
-                </div>
+
+                        <div class="mb-3">
+                            <label for="hintInput" class="form-label">Indice</label>
+                            <textarea class="form-control" id="hintInput" name="hint" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-
-    <section>
-        <div class="container mt-3">
-            <pre><?php print_r($project); ?></pre>
-        </div>
-    </section>
 
     <?php include __DIR__ . "/assets/partials/footer.php"; ?>
 </body>

@@ -51,4 +51,20 @@ class ProjectElement
         $this->description = $parameters["description"] ?? "";
         $this->hint = $parameters["hint"] ?? "";
     }
+
+    /**
+     * Convertit l'élément en un tableau associatif pour faciliter la sérialisation ou l'affichage.
+     * @return array Un tableau associatif représentant les propriétés de l'élément
+     */
+    public function __toArray(): array
+    {
+        return [
+            "src" => $this->src,
+            "type" => $this->type,
+            "scene" => $this->scene,
+            "title" => $this->title,
+            "description" => $this->description,
+            "hint" => $this->hint,
+        ];
+    }
 }
