@@ -1,3 +1,5 @@
+![Logo de Régis](https://www.lesmajesticiels.org/assets/logos/smaller/regis.png "Régis")
+
 # Régis
 
 Régis est un logiciel développé pour [Drama-Tea'c Circus](https://www.dramateaccircus.fr), pour le lancement de sons et de vidéos sur vidéoprojecteur pendant des représentations théâtrales.
