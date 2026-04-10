@@ -78,6 +78,8 @@ class Project
                         "title" => (string) $elementXml->title,
                         "description" => (string) $elementXml->description,
                         "hint" => (string) $elementXml->hint,
+                        "volume" => (float) $elementXml->attributes()->volume ?? 1.0,
+                        "loop" => !empty($elementXml->attributes()->loop)
                     ];
                     $this->elements[] = new ProjectElement($parameters);
                 }
@@ -99,6 +101,10 @@ class Project
             $elementXml = $projectXml->elements->addChild("element");
             $elementXml->addAttribute("src", $elementArray["src"]);
             $elementXml->addAttribute("type", $elementArray["type"]);
+            $elementXml->addAttribute("volume", $elementArray["volume"]);
+            if ($elementArray["loop"]) {
+                $elementXml->addAttribute("loop", "true");
+            }
             $elementXml->addChild("scene", $elementArray["scene"]);
             $elementXml->addChild("title", $elementArray["title"]);
             $elementXml->addChild("description", $elementArray["description"]);
@@ -121,6 +127,11 @@ class Project
     public function getTitle(): string
     {
         return $this->title;
+    }
+
+    public function getModifiedTime(): int
+    {
+        return filemtime($this->getPath("project.xml"));
     }
 
     /**

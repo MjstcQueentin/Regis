@@ -39,6 +39,16 @@ class ProjectElement
     private string $hint;
 
     /**
+     * @var float $volume Niveau de volume pour les éléments audio (entre 0.0 et 1.0, par exemple "0.5" pour 50% du volume)
+     */
+    private float $volume;
+
+    /**
+     * @var bool $loop Indique si l'élément doit être lu en boucle (true pour boucle, false pour lecture normale)
+     */
+    private bool $loop;
+
+    /**
      * Constructeur de la classe ProjectElement.
      * @param array $parameters Un tableau associatif contenant les paramètres de l'élément (src, type, scene, title, description, hint)
      */
@@ -50,6 +60,8 @@ class ProjectElement
         $this->title = $parameters["title"] ?? "";
         $this->description = $parameters["description"] ?? "";
         $this->hint = $parameters["hint"] ?? "";
+        $this->volume = $parameters["volume"] ?? 1.0;
+        $this->loop = $parameters["loop"] ?? false;
     }
 
     /**
@@ -65,6 +77,8 @@ class ProjectElement
             "title" => $this->title,
             "description" => $this->description,
             "hint" => $this->hint,
+            "volume" => $this->volume,
+            "loop" => $this->loop,
         ];
     }
 }

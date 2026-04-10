@@ -1,12 +1,13 @@
 <?php
 
-require_once __DIR__ . '/core/autoload.php';
-
 /**
  * Page d'index des projets Régis
+ * --
+ * Affiche la liste des projets disponibles et permet d'en créer de nouveaux.
+ * @author Quentin Pugeat <contact@quentinpugeat.fr>
+ * @license MIT
  */
-
-use LesMajesticiels\Regis\View\ViewHandler;
+require_once __DIR__ . '/core/autoload.php';
 
 $projectsDir = __DIR__ . "/projects";
 $dirScan = scandir($projectsDir);
@@ -16,7 +17,7 @@ $dirScan = array_filter($dirScan, function ($item) use ($projectsDir) {
 });
 ?>
 
-<?php ViewHandler::templateStart('default', ['title' => 'Liste des projets']) ?>
+<?php LesMajesticiels\Regis\View\ViewHandler::templateStart('default', ['title' => 'Liste des projets']) ?>
 
 <section class="container">
     <h2>Liste des projets</h2>
@@ -84,4 +85,4 @@ $dirScan = array_filter($dirScan, function ($item) use ($projectsDir) {
     </div>
 </div>
 
-<?php ViewHandler::templateEnd() ?>
+<?php LesMajesticiels\Regis\View\ViewHandler::templateEnd() ?>
