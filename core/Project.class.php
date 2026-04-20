@@ -159,4 +159,32 @@ class Project
         $this->elements[] = $element;
         $this->writeDefinitionFile();
     }
+
+    public function moveElementUp(int $index): void
+    {
+        if ($index > 0 && $index < count($this->elements)) {
+            $temp = $this->elements[$index - 1];
+            $this->elements[$index - 1] = $this->elements[$index];
+            $this->elements[$index] = $temp;
+            $this->writeDefinitionFile();
+        }
+    }
+
+    public function moveElementDown(int $index): void
+    {
+        if ($index >= 0 && $index < count($this->elements) - 1) {
+            $temp = $this->elements[$index + 1];
+            $this->elements[$index + 1] = $this->elements[$index];
+            $this->elements[$index] = $temp;
+            $this->writeDefinitionFile();
+        }
+    }
+
+    public function deleteElement(int $index): void
+    {
+        if ($index >= 0 && $index < count($this->elements)) {
+            array_splice($this->elements, $index, 1);
+            $this->writeDefinitionFile();
+        }
+    }
 }

@@ -32,6 +32,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ];
             $project->addElement(new ProjectElement($elementParameters));
             break;
+        case "move-element-up":
+            $index = intval($_POST["index"]);
+            $project->moveElementUp($index);
+            break;
+        case "move-element-down":
+            $index = intval($_POST["index"]);
+            $project->moveElementDown($index);
+            break;
+        case "delete-element":
+            $index = intval($_POST["index"]);
+            $project->deleteElement($index);
+            break;
     }
 
     http_response_code(303);
@@ -57,6 +69,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <i class="bi bi-plus"></i>
                 <span>Ajouter un élément</span>
             </button>
+        <?php endif; ?>
+
+        <?php if (!empty($project->getElements())): ?>
+            <a href="/project.php?dir=<?= urlencode($_GET["name"]) ?>" class="btn btn-success">
+                <i class="bi bi-play"></i>
+                <span>Jouer !</span>
+            </a>
         <?php endif; ?>
     </div>
 </section>
