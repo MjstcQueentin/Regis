@@ -48,27 +48,6 @@ class Project
             $str = file_get_contents($projectPath . "/project.xml");
             $projectXml = new \SimpleXMLElement($str);
 
-            $audios = scandir($projectPath . "/audio");
-            $videos = scandir($projectPath . "/video");
-            $this->medias = array_merge(
-                array_map(
-                    function ($audio) {
-                        return "audio/" . $audio;
-                    },
-                    array_filter($audios, function ($item) {
-                        return substr($item, 0, 1) != ".";
-                    }),
-                ),
-                array_map(
-                    function ($video) {
-                        return "video/" . $video;
-                    },
-                    array_filter($videos, function ($item) {
-                        return substr($item, 0, 1) != ".";
-                    }),
-                ),
-            );
-
             if (!empty($projectXml->elements->element)) {
                 foreach ($projectXml->elements->element as $elementXml) {
                     $parameters = [
@@ -84,6 +63,9 @@ class Project
                     $this->elements[] = new ProjectElement($parameters);
                 }
             }
+
+            // Charger la liste des médias disponibles pour le projet
+            $this->refreshMediaList();
         }
     }
 
@@ -134,15 +116,6 @@ class Project
         return filemtime($this->getPath("project.xml"));
     }
 
-    /**
-     * Retourne la liste des éléments du projet.
-     * @return list<ProjectElement> La liste des éléments du projet
-     */
-    public function getElements(): array
-    {
-        return $this->elements;
-    }
-
     public function getMedias(?string $type = null): array
     {
         if (!empty($type) && in_array($type, ["audio", "video"])) {
@@ -152,6 +125,43 @@ class Project
         }
 
         return $this->medias;
+    }
+
+    /**
+     * Recharge la liste des médias disponibles pour le projet en scannant les dossiers "audio" et "video" du projet.
+     */
+    public function refreshMediaList(): void
+    {
+        $projectPath = projectDirectoryPath($this->dirName);
+        $audios = scandir($projectPath . "/audio");
+        $videos = scandir($projectPath . "/video");
+        $this->medias = array_merge(
+            array_map(
+                function ($audio) {
+                    return "audio/" . $audio;
+                },
+                array_filter($audios, function ($item) {
+                    return substr($item, 0, 1) != ".";
+                }),
+            ),
+            array_map(
+                function ($video) {
+                    return "video/" . $video;
+                },
+                array_filter($videos, function ($item) {
+                    return substr($item, 0, 1) != ".";
+                }),
+            ),
+        );
+    }
+
+    /**
+     * Retourne la liste des éléments du projet.
+     * @return list<ProjectElement> La liste des éléments du projet
+     */
+    public function getElements(): array
+    {
+        return $this->elements;
     }
 
     public function addElement(ProjectElement $element): void
