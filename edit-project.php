@@ -23,10 +23,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $elementParameters = [
                 "src" => $_POST["src"],
                 "type" => mime_content_type($project->getPath($_POST["src"])),
-                "scene" => $_POST["scene"],
-                "title" => $_POST["title"],
-                "description" => $_POST["description"],
-                "hint" => $_POST["hint"],
+                "scene" => trim($_POST["scene"]),
+                "title" => trim($_POST["title"]),
+                "description" => trim($_POST["description"]),
+                "hint" => trim($_POST["hint"]),
                 "volume" => isset($_POST["volume"]) ? floatval($_POST["volume"]) : 1.0,
                 "loop" => isset($_POST["loop"]) ? boolval($_POST["loop"]) : false,
             ];
@@ -46,9 +46,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <section class="container mb-3">
     <h2>Modifier le projet "<?= htmlspecialchars($project->getTitle()) ?>"</h2>
 
-    <div class="d-flex flex-row flex-wrap gap-1">
+    <div class="d-flex flex-row flex-wrap gap-1 border rounded p-2 mt-3">
         <a href="/edit-medias.php?name=<?= urlencode($_GET["name"]) ?>" class="btn btn-primary">
-            <i class="bi bi-image"></i>
+            <i class="bi bi-collection-play"></i>
             <span>Ajouter ou supprimer des médias...</span>
         </a>
 
@@ -67,29 +67,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php else: ?>
         <?php foreach ($project->getElements() as $elementIndex => $element): ?>
             <?php $elementArray = $element->__toArray(); ?>
-            <div class="d-flex flex-row gap-1 border rounded p-2 mb-2">
+            <div class="d-flex flex-row gap-2 border rounded p-2 mb-2">
+                <div class="d-flex flex-column justify-content-between">
+                    <?php if ($elementIndex > 0): ?>
+                        <form action="" method="POST">
+                            <input type="hidden" name="action" value="move-element-up">
+                            <input type="hidden" name="index" value="<?= $elementIndex ?>">
+                            <button type="submit" class="btn btn-link" title="Déplacer vers le haut">
+                                <i class="bi bi-arrow-up"></i>
+                            </button>
+                        </form>
+                    <?php else: ?>
+                        <div></div>
+                    <?php endif; ?>
+
+                    <?php if ($elementIndex < count($project->getElements()) - 1): ?>
+                        <form action="" method="POST">
+                            <input type="hidden" name="action" value="move-element-down">
+                            <input type="hidden" name="index" value="<?= $elementIndex ?>">
+                            <button type="submit" class="btn btn-link" title="Déplacer vers le bas">
+                                <i class="bi bi-arrow-down"></i>
+                            </button>
+                        </form>
+                    <?php else: ?>
+                        <div></div>
+                    <?php endif; ?>
+                </div>
                 <div class="flex-grow-1">
-                    <strong><?= htmlspecialchars($elementArray["title"]) ?></strong><br>
-                    <em>Scène <?= htmlspecialchars($elementArray["scene"]) ?></em><br>
-                    <p><?= nl2br(htmlspecialchars($elementArray["description"])) ?></p>
-                    <p><?= nl2br(htmlspecialchars($elementArray["hint"])) ?></p>
+                    <p class="mt-0 mb-1 text-uppercase">
+                        <span class="badge bg-primary"><?= htmlspecialchars($elementArray["scene"]) ?></span>
+
+                        <span class="badge bg-secondary"><?= htmlspecialchars($elementArray["type"]) ?></span>
+
+                        <?php if ($elementArray["volume"]): ?>
+                            <span class="badge bg-secondary">Volume: <?= htmlspecialchars($elementArray["volume"]) ?></span>
+                        <?php else: ?>
+                            <span class="badge bg-secondary">Volume: 1.0</span>
+                        <?php endif; ?>
+
+                        <?php if ($elementArray["loop"]): ?>
+                            <span class="badge bg-secondary">Loop</span>
+                        <?php endif; ?>
+                    </p>
+                    <p class="m-0 fw-bold">
+                        <?= htmlspecialchars($elementArray["title"]) ?>
+                    </p>
+                    <p class="m-0">
+                        <?= nl2br(htmlspecialchars($elementArray["description"])) ?>
+                    </p>
+                    <p class="m-0 text-muted fst-italic">
+                        <?= nl2br(htmlspecialchars($elementArray["hint"])) ?>
+                    </p>
                 </div>
                 <div class="d-flex flex-row gap-1">
-                    <form action="" method="POST">
-                        <input type="hidden" name="action" value="move-element-up">
-                        <input type="hidden" name="index" value="<?= $elementIndex ?>">
-                        <button type="submit" class="btn btn-primary" title="Déplacer vers le haut">
-                            <i class="bi bi-arrow-up"></i>
-                        </button>
-                    </form>
-                    <form action="" method="POST">
-                        <input type="hidden" name="action" value="move-element-down">
-                        <input type="hidden" name="index" value="<?= $elementIndex ?>">
-                        <button type="submit" class="btn btn-primary" title="Déplacer vers le bas">
-                            <i class="bi bi-arrow-down"></i>
-                        </button>
-                    </form>
-
                     <form action="" method="POST">
                         <input type="hidden" name="action" value="delete-element">
                         <input type="hidden" name="index" value="<?= $elementIndex ?>">
