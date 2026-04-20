@@ -27,6 +27,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 "title" => $_POST["title"],
                 "description" => $_POST["description"],
                 "hint" => $_POST["hint"],
+                "volume" => isset($_POST["volume"]) ? floatval($_POST["volume"]) : 1.0,
+                "loop" => isset($_POST["loop"]) ? boolval($_POST["loop"]) : false,
             ];
             $project->addElement(new ProjectElement($elementParameters));
             break;
@@ -39,20 +41,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 
-<?php LesMajesticiels\Regis\View\ViewHandler::templateStart('default', ['title' => 'Modifier le projet ' . $project->getTitle()]) ?>
+<?php LesMajesticiels\Regis\View\ViewHandler::templateStart("default", ["title" => "Modifier le projet " . $project->getTitle()]); ?>
 
 <section class="container mb-3">
     <h2>Modifier le projet "<?= htmlspecialchars($project->getTitle()) ?>"</h2>
 
-    <a href="/edit-medias.php?name=<?= urlencode($_GET["name"]) ?>" class="btn btn-primary">
-        Modifier les médias du projet
-    </a>
+    <div class="d-flex flex-row flex-wrap gap-1">
+        <a href="/edit-medias.php?name=<?= urlencode($_GET["name"]) ?>" class="btn btn-primary">
+            <i class="bi bi-image"></i>
+            <span>Ajouter ou supprimer des médias...</span>
+        </a>
 
-    <?php if (!empty($project->getMedias())): ?>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addElementModal">
-            Ajouter un élément
-        </button>
-    <?php endif; ?>
+        <?php if (!empty($project->getMedias())): ?>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addElementModal">
+                <i class="bi bi-plus"></i>
+                <span>Ajouter un élément</span>
+            </button>
+        <?php endif; ?>
+    </div>
 </section>
 
 <section class="container">
@@ -148,6 +154,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label for="hintInput" class="form-label">Indice</label>
                         <textarea class="form-control" id="hintInput" name="hint" required></textarea>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="hintInput" class="form-label">Volume</label>
+                        <input type="number" class="form-control" id="volumeInput" name="volume" min="0" max="1" step="0.01" value="1.0">
+                        <small class="form-text text-muted">Niveau de volume pour les éléments audio (entre 0.0 et 1.0, par exemple "0.5" pour 50% du volume)</small>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="loopCheck" name="loop">
+                        <label class="form-check-label" for="loopCheck">Lire en boucle</label>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
@@ -158,4 +175,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </div>
 
-<?php LesMajesticiels\Regis\View\ViewHandler::templateEnd() ?>
+<?php LesMajesticiels\Regis\View\ViewHandler::templateEnd(); ?>
