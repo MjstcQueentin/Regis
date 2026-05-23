@@ -9,7 +9,7 @@ use LesMajesticiels\Regis\View\ViewHandler;
     <?= ViewHandler::renderPartial('head', ['title' => $title ?? '']) ?>
 </head>
 
-<body data-bs-theme="<?= $_COOKIE['bs-theme'] ?? 'light' ?>" <?= isset($autoshowVideoPlayer) ? 'autoshow-video-player' : '' ?>>
+<body data-bs-theme="<?= $_COOKIE['bs-theme'] ?? 'light' ?>" <?= !empty($autoshowVideoPlayer) ? 'autoshow-video-player' : '' ?>>
     <?= ViewHandler::renderPartial('header') ?>
 
     <?= $buffer ?>

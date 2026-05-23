@@ -18,32 +18,39 @@ header('Last-Modified: ' . date('D, d M Y H:i:s', $project->getModifiedTime()) .
 
 <?php LesMajesticiels\Regis\View\ViewHandler::templateStart('default', [
     'title' => $project->getTitle(),
-    'autoshowVideoPlayer' => true,
+    'autoshowVideoPlayer' => $project->hasVideos(),
     'prefetch' => array_map(function ($element) use ($project) {
         return $project->getPath($element->__toArray()['src']);
     }, $project->getElements())
 ]) ?>
 
-<section>
-    <div class="container d-flex flex-row justify-content-between align-items-center">
-        <h2>
-            <?= htmlspecialchars($project->getTitle()) ?>
-        </h2>
-        <div>
-            <div class="d-flex flex-row gap-1 align-items-baseline justify-content-end mb-1">
-                <button class="btn btn-sm btn-outline-primary" data-trigger="video-play" data-video="/assets/test-video.mp4">
-                    <i class="bi bi-play"></i> Vidéo de test
-                </button>
-                <button class="btn btn-sm btn-outline-secondary" data-trigger="video-stop">
-                    <i class="bi bi-stop"></i>
-                </button>
-            </div>
-            <div class="d-flex flex-row gap-1 align-items-baseline justify-content-end">
-                <button class="btn btn-sm btn-outline-danger" data-trigger="video-stop reset-all">
-                    <i class="bi bi-stop"></i> Remise à zéro
-                </button>
-            </div>
-        </div>
+<section class="container mb-3">
+    <h2><?= htmlspecialchars($project->getTitle()) ?></h2>
+
+    <div class="d-flex flex-row flex-wrap gap-1 border rounded p-2 mt-3">
+        <?php if($project->hasVideos()): ?>
+            <button class="btn btn-primary" data-trigger="video-play" data-video="/assets/test-video.mp4">
+                <i class="bi bi-play"></i> Vidéo de test
+            </button>
+
+            <button class="btn btn-secondary" data-trigger="video-stop">
+                <i class="bi bi-stop"></i> Arrêter la vidéo de test
+            </button>
+        <?php endif; ?>
+
+        <button class="btn btn-danger" data-trigger="video-stop reset-all">
+            <i class="bi bi-stop"></i> Remise à zéro
+        </button>
+
+        <a href="/edit-medias.php?name=<?= urlencode($_GET["dir"]) ?>" class="btn btn-outline-secondary">
+            <i class="bi bi-collection-play"></i>
+            <span>Médias...</span>
+        </a>
+
+        <a href="/edit-project.php?name=<?= urlencode($_GET["dir"]) ?>" class="btn btn-outline-secondary">
+            <i class="bi bi-pencil"></i>
+            <span>Composition...</span>
+        </a>
     </div>
 </section>
 
@@ -100,7 +107,6 @@ header('Last-Modified: ' . date('D, d M Y H:i:s', $project->getModifiedTime()) .
     </div>
 </section>
 
-<?php include __DIR__ . '/assets/partials/footer.php'; ?>
 <script>
     const audios = document.querySelectorAll('audio[volume]');
     audios.forEach(audio => {

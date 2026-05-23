@@ -42,7 +42,7 @@ class Project
             mkdir($projectPath);
             mkdir($projectPath . "/audio");
             mkdir($projectPath . "/video");
-            file_put_contents($projectPath . "/project.xml", '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><project><title>' . htmlentities($projectTitle) . "</title><elements></elements></project>");
+            file_put_contents($projectPath . "/project.xml", '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><project><title>' . htmlentities($this->title) . "</title><elements></elements></project>");
         } else {
             // Charger les éléments du projet depuis le fichier XML
             $str = file_get_contents($projectPath . "/project.xml");
@@ -114,6 +114,11 @@ class Project
     public function getModifiedTime(): int
     {
         return filemtime($this->getPath("project.xml"));
+    }
+
+    public function hasVideos(): bool
+    {
+        return !empty($this->getMedias("video"));
     }
 
     public function getMedias(?string $type = null): array

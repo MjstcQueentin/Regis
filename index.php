@@ -44,7 +44,7 @@ $dirScan = array_filter($dirScan, function ($item) use ($projectsDir) {
                         </td>
                         <td>
                             <a class="btn btn-sm btn-link text-decoration-none" href="project.php?dir=<?= urlencode($item) ?>" title="Ouvrir le projet">
-                                <i class="bi bi-folder2-open"></i> Ouvrir
+                                <i class="bi bi-play"></i> Jouer
                             </a>
                             <a class="btn btn-sm btn-link text-decoration-none" href="edit-project.php?action=edit&name=<?= urlencode($item) ?>" title="Modifier le projet">
                                 <i class="bi bi-pencil"></i> Modifier...

@@ -10,7 +10,6 @@
 require_once __DIR__ . "/core/autoload.php";
 
 use LesMajesticiels\Regis\Project;
-use LesMajesticiels\Regis\ProjectElement;
 
 $projectName = $_GET['name'];
 $project = new Project($projectName);
