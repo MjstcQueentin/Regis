@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 "scene" => trim($_POST["scene"]),
                 "title" => trim($_POST["title"]),
                 "description" => trim($_POST["description"]),
-                "hint" => trim($_POST["hint"]),
+                "hint" => trim($_POST["hint"] ?? ""),
                 "volume" => isset($_POST["volume"]) ? floatval($_POST["volume"]) : 1.0,
                 "loop" => isset($_POST["loop"]) ? boolval($_POST["loop"]) : false,
             ];
@@ -118,24 +118,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         <span class="badge bg-secondary"><?= htmlspecialchars($elementArray["type"]) ?></span>
 
-                        <?php if ($elementArray["volume"]): ?>
-                            <span class="badge bg-secondary">Volume: <?= htmlspecialchars($elementArray["volume"]) ?></span>
+                        <?php if (!empty($elementArray["volume"])): ?>
+                            <?php $volumeClass = $elementArray["volume"] < 0.5 ? "bi-volume-down" : "bi-volume-up"; ?>
+                            <span class="badge bg-secondary" title="Niveau du volume"><i class="bi <?= $volumeClass ?>"></i>  <?= number_format($elementArray["volume"] * 100, 0) ?>%</span>
                         <?php else: ?>
-                            <span class="badge bg-secondary">Volume: 1.0</span>
+                            <span class="badge bg-secondary" title="Niveau du volume"><i class="bi bi-volume-up"></i> 100%</span>
                         <?php endif; ?>
 
                         <?php if ($elementArray["loop"]): ?>
-                            <span class="badge bg-secondary">Loop</span>
+                            <span class="badge bg-info"><i class="bi bi-arrow-repeat"></i> en boucle</span>
                         <?php endif; ?>
                     </p>
                     <p class="m-0 fw-bold">
-                        <?= htmlspecialchars($elementArray["title"]) ?>
+                        <?= htmlspecialchars(trim($elementArray["title"])) ?>
                     </p>
                     <p class="m-0">
-                        <?= nl2br(htmlspecialchars($elementArray["description"])) ?>
+                        <?= nl2br(htmlspecialchars(trim($elementArray["description"]))) ?>
                     </p>
                     <p class="m-0 text-muted fst-italic">
-                        <?= nl2br(htmlspecialchars($elementArray["hint"])) ?>
+                        <?= nl2br(htmlspecialchars(trim($elementArray["hint"]))) ?>
                     </p>
                 </div>
                 <div class="d-flex flex-row gap-1">
@@ -154,65 +155,76 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!-- Modal -->
 <div class="modal fade" id="addElementModal" tabindex="-1" aria-labelledby="addElementModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="addElementModalLabel">Ajouter un élément</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="" method="POST">
+            <form action="" method="POST" class="needs-validation">
                 <input type="hidden" name="action" value="add-element">
 
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="srcSelect" class="form-label">Fichier à utiliser</label>
-                        <select class="form-select" id="srcSelect" name="src">
-                            <optgroup label="Vidéos">
-                                <?php foreach ($project->getMedias("video") as $video): ?>
-                                    <option value="<?= htmlspecialchars($video) ?>">
-                                        <?= htmlspecialchars($video) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </optgroup>
-                            <optgroup label="Audios">
-                                <?php foreach ($project->getMedias("audio") as $audio): ?>
-                                    <option value="<?= htmlspecialchars($audio) ?>">
-                                        <?= htmlspecialchars($audio) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </optgroup>
-                        </select>
-                    </div>
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div class="mb-3">
+                                <label for="srcSelect" class="form-label">Fichier à utiliser</label>
+                                <select class="form-select" id="srcSelect" name="src">
+                                    <optgroup label="Vidéos">
+                                        <?php foreach ($project->getMedias("video") as $video): ?>
+                                            <option value="<?= htmlspecialchars($video) ?>">
+                                                <?= htmlspecialchars($video) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </optgroup>
+                                    <optgroup label="Audios">
+                                        <?php foreach ($project->getMedias("audio") as $audio): ?>
+                                            <option value="<?= htmlspecialchars($audio) ?>">
+                                                <?= htmlspecialchars($audio) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </optgroup>
+                                </select>
+                            </div>
 
-                    <div class="mb-3">
-                        <label for="sceneInput" class="form-label">Numéro de la scène</label>
-                        <input type="text" class="form-control" id="sceneInput" name="scene" required>
-                    </div>
+                            <div class="mb-3">
+                                <label for="sceneInput" class="form-label">Numéro de la scène</label>
+                                <input type="text" class="form-control" id="sceneInput" name="scene" placeholder="Par exemple, Scene 1" required>
+                            </div>
 
-                    <div class="mb-3">
-                        <label for="titleInput" class="form-label">Titre</label>
-                        <input type="text" class="form-control" id="titleInput" name="title" required>
-                    </div>
+                            <div class="mb-3">
+                                <label for="titleInput" class="form-label">Titre</label>
+                                <input type="text" class="form-control" id="titleInput" name="title" placeholder="Par exemple, Musique Jazz des années 20" required>
+                            </div>
 
-                    <div class="mb-3">
-                        <label for="descriptionInput" class="form-label">Description</label>
-                        <textarea class="form-control" id="descriptionInput" name="description" required></textarea>
-                    </div>
+                            <div class="mb-3">
+                                <label for="descriptionInput" class="form-label">Description</label>
+                                <textarea class="form-control" id="descriptionInput" name="description" aria-describedby="descriptionHelpBlock" rows="6" required></textarea>
+                                <div id="descriptionHelpBlock" class="form-text">
+                                    Généralement, on copie-colle du script le moment de la scène où le son est censé être joué.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg">
+                            <div class="mb-3">
+                                <label for="hintInput" class="form-label">Indice</label>
+                                <textarea class="form-control" id="hintInput" name="hint" aria-describedby="hintHelpBlock" rows="4"></textarea>
+                                <div id="hintHelpBlock" class="form-text">
+                                    Si nécessaire, ajouter des indications sur la manière de jouer ou de terminer cet élément.
+                                </div>
+                            </div>
 
-                    <div class="mb-3">
-                        <label for="hintInput" class="form-label">Indice</label>
-                        <textarea class="form-control" id="hintInput" name="hint" required></textarea>
-                    </div>
+                            <div class="mb-3">
+                                <label for="hintInput" class="form-label">Volume</label>
+                                <input type="number" class="form-control" id="volumeInput" name="volume" min="0" max="1" step="0.01" value="1.0">
+                                <small class="form-text text-muted">Entre 0.0 et 1.0, par exemple "0.5" pour 50% du volume</small>
+                            </div>
 
-                    <div class="mb-3">
-                        <label for="hintInput" class="form-label">Volume</label>
-                        <input type="number" class="form-control" id="volumeInput" name="volume" min="0" max="1" step="0.01" value="1.0">
-                        <small class="form-text text-muted">Niveau de volume pour les éléments audio (entre 0.0 et 1.0, par exemple "0.5" pour 50% du volume)</small>
-                    </div>
-
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="loopCheck" name="loop">
-                        <label class="form-check-label" for="loopCheck">Lire en boucle</label>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="loopCheck" name="loop">
+                                <label class="form-check-label" for="loopCheck">Lire en boucle</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -223,5 +235,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 </div>
+<script src="https://assets.lesmajesticiels.org/libraries/bootstrap/bootstrap-5.x-custom/form-validation.js"></script>
 
 <?php LesMajesticiels\Regis\View\ViewHandler::templateEnd(); ?>
