@@ -179,6 +179,14 @@ class Project
         $this->writeDefinitionFile();
     }
 
+    public function replaceElement(int $index, ProjectElement $element): void
+    {
+        if ($index >= 0 && $index < count($this->elements)) {
+            $this->elements[$index] = $element;
+            $this->writeDefinitionFile();
+        }
+    }
+
     public function moveElementUp(int $index): void
     {
         if ($index > 0 && $index < count($this->elements)) {

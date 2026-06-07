@@ -35,6 +35,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 isset($_POST["index"]) ? intval($_POST["index"]) : null
             );
             break;
+        case "edit-element":
+            $elementIndex = intval($_POST["index"]);
+            $elementParameters = [
+                "src" => $_POST["src"],
+                "type" => mime_content_type($project->getPath($_POST["src"])),
+                "scene" => trim($_POST["scene"]),
+                "title" => trim($_POST["title"]),
+                "description" => trim($_POST["description"]),
+                "hint" => trim($_POST["hint"] ?? ""),
+                "volume" => isset($_POST["volume"]) ? floatval($_POST["volume"]) : 1.0,
+                "loop" => isset($_POST["loop"]) ? boolval($_POST["loop"]) : false,
+            ];
+            $project->replaceElement($elementIndex, new ProjectElement($elementParameters));
+            break;
         case "move-element-up":
             $index = intval($_POST["index"]);
             $project->moveElementUp($index);
@@ -89,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php else: ?>
         <?php foreach ($project->getElements() as $elementIndex => $element): ?>
             <?php $elementArray = $element->__toArray(); ?>
-            <div class="d-flex flex-row gap-2 border rounded p-2 mb-2">
+            <div class="d-flex flex-row gap-2 border rounded p-2 mb-2" data-element-index="<?= $elementIndex ?>">
                 <div class="d-flex flex-column justify-content-between">
                     <?php if ($elementIndex > 0): ?>
                         <form action="" method="POST">
@@ -142,7 +156,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <?= nl2br(htmlspecialchars(trim($elementArray["hint"]))) ?>
                     </p>
                 </div>
-                <div class="d-flex flex-row gap-1">
+                <div class="d-flex flex-row align-items-start gap-1">
+                    <button type="button" class="btn btn-secondary" data-trigger="element-editor" data-index="<?= $elementIndex ?>" title="Modifier cet élément">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+
                     <form action="" method="POST">
                         <input type="hidden" name="action" value="delete-element">
                         <input type="hidden" name="index" value="<?= $elementIndex ?>">
@@ -218,7 +236,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
 
                             <div class="mb-3">
-                                <label for="hintInput" class="form-label">Volume</label>
+                                <label for="volumeInput" class="form-label">Volume</label>
                                 <input type="number" class="form-control" id="volumeInput" name="volume" min="0" max="1" step="0.01" value="1.0">
                                 <small class="form-text text-muted">Entre 0.0 et 1.0, par exemple "0.5" pour 50% du volume</small>
                             </div>
@@ -230,7 +248,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             <div class="mb-3">
                                 <label for="indexSelect" class="form-label">Insérer avant</label>
-                                <select class="form-select" id="srcSelect" name="index">
+                                <select class="form-select" id="indexSelect" name="index">
                                     <?php foreach ($project->getElements() as $index => $element): ?>
                                         <option value="<?= htmlspecialchars($index) ?>">
                                             <?= htmlspecialchars($element->__toArray()["scene"]) ?>: <?= htmlspecialchars($element->__toArray()["title"]) ?>
@@ -252,6 +270,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const addElementModal = new bootstrap.Modal(document.getElementById("addElementModal"));
+
+        document.querySelectorAll("[data-trigger='element-editor']").forEach(button => {
+            button.addEventListener("click", () => {
+                const elementIndex = button.getAttribute("data-index");
+                document.querySelector("#addElementModal input[name='action']").value = "edit-element";
+                document.querySelector("#addElementModal select[name='index']").value = elementIndex;
+
+                const element = document.querySelector(`[data-element-index='${elementIndex}']`);
+                const scene = element.querySelector("p.text-uppercase .badge").textContent.trim();
+                const title = element.querySelector("p.fw-bold").textContent.trim();
+                const description = element.querySelector("p:not(.text-uppercase):not(.fw-bold):not(.text-muted)").textContent.trim();
+                const hint = element.querySelector("p.text-muted").textContent.trim();
+
+                document.querySelector("#addElementModal input[name='scene']").value = scene;
+                document.querySelector("#addElementModal input[name='title']").value = title;
+                document.querySelector("#addElementModal textarea[name='description']").value = description;
+                document.querySelector("#addElementModal textarea[name='hint']").value = hint;
+
+                document.querySelector("#addElementModal #indexSelect").parentElement.style.display = "none";
+
+                addElementModal.show();
+            });
+        });
+
+        document.getElementById("addElementModal").addEventListener("hidden.bs.modal", () => {
+            document.querySelector("#addElementModal form").reset();
+            document.querySelector("#addElementModal input[name='action']").value = "add-element";
+            document.querySelector("#addElementModal input[name='index']").value = "";
+            document.querySelector("#addElementModal #indexSelect").parentElement.style.display = "";
+        });
+    });
+</script>
+
 <script src="https://assets.lesmajesticiels.org/libraries/bootstrap/bootstrap-5.x-custom/form-validation.js"></script>
 
 <?php LesMajesticiels\Regis\View\ViewHandler::templateEnd(); ?>
