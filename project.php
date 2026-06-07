@@ -73,7 +73,7 @@ header('Last-Modified: ' . date('D, d M Y H:i:s', $project->getModifiedTime()) .
                         </td>
                         <td>
                             <b><?= htmlspecialchars($element['title']) ?></b><br>
-                            <i><?= htmlspecialchars($element['description']) ?></i>
+                            <i><?= nl2br(htmlspecialchars(trim($element['description']))) ?></i>
                         </td>
                         <td>
                             <?php if (!is_file($project->getPath($element['src']))): ?>
@@ -97,7 +97,7 @@ header('Last-Modified: ' . date('D, d M Y H:i:s', $project->getModifiedTime()) .
                                 </div>
                             <?php endif; ?>
                             <?php if (!empty($element['hint'])) : ?>
-                                <br><i><?= htmlspecialchars($element['hint']) ?></i>
+                                <br><i><?= nl2br(htmlspecialchars(trim($element['hint']))) ?></i>
                             <?php endif; ?>
                         </td>
                     </tr>
