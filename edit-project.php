@@ -30,7 +30,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 "volume" => isset($_POST["volume"]) ? floatval($_POST["volume"]) : 1.0,
                 "loop" => isset($_POST["loop"]) ? boolval($_POST["loop"]) : false,
             ];
-            $project->addElement(new ProjectElement($elementParameters));
+            $project->addElement(
+                new ProjectElement($elementParameters),
+                isset($_POST["index"]) ? intval($_POST["index"]) : null
+            );
             break;
         case "move-element-up":
             $index = intval($_POST["index"]);
@@ -120,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         <?php if (!empty($elementArray["volume"])): ?>
                             <?php $volumeClass = $elementArray["volume"] < 0.5 ? "bi-volume-down" : "bi-volume-up"; ?>
-                            <span class="badge bg-secondary" title="Niveau du volume"><i class="bi <?= $volumeClass ?>"></i>  <?= number_format($elementArray["volume"] * 100, 0) ?>%</span>
+                            <span class="badge bg-secondary" title="Niveau du volume"><i class="bi <?= $volumeClass ?>"></i> <?= number_format($elementArray["volume"] * 100, 0) ?>%</span>
                         <?php else: ?>
                             <span class="badge bg-secondary" title="Niveau du volume"><i class="bi bi-volume-up"></i> 100%</span>
                         <?php endif; ?>
@@ -223,6 +226,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="loopCheck" name="loop">
                                 <label class="form-check-label" for="loopCheck">Lire en boucle</label>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="indexSelect" class="form-label">Insérer avant</label>
+                                <select class="form-select" id="srcSelect" name="index">
+                                    <?php foreach ($project->getElements() as $index => $element): ?>
+                                        <option value="<?= htmlspecialchars($index) ?>">
+                                            <?= htmlspecialchars($element->__toArray()["scene"]) ?>: <?= htmlspecialchars($element->__toArray()["title"]) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                    <option value="<?= htmlspecialchars(count($project->getElements())) ?>" selected>
+                                        Insérer en dernier
+                                    </option>
+                                </select>
                             </div>
                         </div>
                     </div>

@@ -169,9 +169,13 @@ class Project
         return $this->elements;
     }
 
-    public function addElement(ProjectElement $element): void
+    public function addElement(ProjectElement $element, int|null $index = null): void
     {
-        $this->elements[] = $element;
+        if (isset($index) && $index >= 0 && $index < count($this->elements)) {
+            array_splice($this->elements, $index, 0, [$element]);
+        } else {
+            $this->elements[] = $element;
+        }
         $this->writeDefinitionFile();
     }
 
