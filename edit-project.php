@@ -103,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php else: ?>
         <?php foreach ($project->getElements() as $elementIndex => $element): ?>
             <?php $elementArray = $element->__toArray(); ?>
-            <div class="d-flex flex-row gap-2 border rounded p-2 mb-2" data-element-index="<?= $elementIndex ?>">
+            <div class="d-flex flex-row gap-2 border rounded p-2 mb-2" data-element-src="<?= $elementArray["src"] ?>" data-element-index="<?= $elementIndex ?>">
                 <div class="d-flex flex-column justify-content-between">
                     <?php if ($elementIndex > 0): ?>
                         <form action="" method="POST">
@@ -137,13 +137,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         <?php if (!empty($elementArray["volume"])): ?>
                             <?php $volumeClass = $elementArray["volume"] < 0.5 ? "bi-volume-down" : "bi-volume-up"; ?>
-                            <span class="badge bg-secondary" title="Niveau du volume"><i class="bi <?= $volumeClass ?>"></i> <?= number_format($elementArray["volume"] * 100, 0) ?>%</span>
+                            <span class="badge bg-secondary" data-volume="<?= $elementArray["volume"] ?>" title="Niveau du volume"><i class="bi <?= $volumeClass ?>"></i> <?= number_format($elementArray["volume"] * 100, 0) ?>%</span>
                         <?php else: ?>
-                            <span class="badge bg-secondary" title="Niveau du volume"><i class="bi bi-volume-up"></i> 100%</span>
+                            <span class="badge bg-secondary" data-volume="1" title="Niveau du volume"><i class="bi bi-volume-up"></i> 100%</span>
                         <?php endif; ?>
 
                         <?php if ($elementArray["loop"]): ?>
-                            <span class="badge bg-info"><i class="bi bi-arrow-repeat"></i> en boucle</span>
+                            <span class="badge bg-info" data-loop="true"><i class="bi bi-arrow-repeat"></i> en boucle</span>
                         <?php endif; ?>
                     </p>
                     <p class="m-0 fw-bold">
@@ -281,15 +281,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 document.querySelector("#addElementModal select[name='index']").value = elementIndex;
 
                 const element = document.querySelector(`[data-element-index='${elementIndex}']`);
+                const src = element.getAttribute("data-element-src");
                 const scene = element.querySelector("p.text-uppercase .badge").textContent.trim();
                 const title = element.querySelector("p.fw-bold").textContent.trim();
                 const description = element.querySelector("p:not(.text-uppercase):not(.fw-bold):not(.text-muted)").textContent.trim();
                 const hint = element.querySelector("p.text-muted").textContent.trim();
+                const volume = element.querySelector("[data-volume]").getAttribute("data-volume");
+                const loop = element.querySelectorAll("[data-loop]").length > 0;
 
+                document.querySelector("#addElementModal select[name='src']").value = src;
                 document.querySelector("#addElementModal input[name='scene']").value = scene;
                 document.querySelector("#addElementModal input[name='title']").value = title;
                 document.querySelector("#addElementModal textarea[name='description']").value = description;
                 document.querySelector("#addElementModal textarea[name='hint']").value = hint;
+                document.querySelector("#addElementModal input[name='volume']").value = volume;
+                document.querySelector("#addElementModal input[name='loop']").checked = loop;
 
                 document.querySelector("#addElementModal #indexSelect").parentElement.style.display = "none";
 
@@ -300,7 +306,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         document.getElementById("addElementModal").addEventListener("hidden.bs.modal", () => {
             document.querySelector("#addElementModal form").reset();
             document.querySelector("#addElementModal input[name='action']").value = "add-element";
-            document.querySelector("#addElementModal input[name='index']").value = "";
+            document.querySelector("#addElementModal select[name='index']").value = "";
             document.querySelector("#addElementModal #indexSelect").parentElement.style.display = "";
         });
     });
