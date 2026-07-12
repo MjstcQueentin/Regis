@@ -7,9 +7,9 @@
  * @author Quentin Pugeat <contact@quentinpugeat.fr>
  * @license MIT
  */
-require_once __DIR__ . "/core/autoload.php";
+require_once __DIR__ . "/../app/autoload.php";
 
-use LesMajesticiels\Regis\Project;
+use LesMajesticiels\Regis\Projects\Project;
 
 $projectName = $_GET['name'];
 $project = new Project($projectName);

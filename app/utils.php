@@ -15,7 +15,7 @@ function requireValidProjectName($projectName)
     }
 
     $projectDirectoryName = projectNameToDirectoryName($projectName);
-    $projectDir = __DIR__ . '/../projects/' . $projectDirectoryName;
+    $projectDir = REGIS_PROJECTS . $projectDirectoryName;
 
     if (!is_dir($projectDir)) {
         http_response_code(303);
@@ -48,7 +48,7 @@ function projectDirectoryPath(string $projectName): string
     if (empty($projectName)) throw new InvalidArgumentException("Le nom du projet ne peut pas être vide.");
 
     $projectDirectoryName = projectNameToDirectoryName($projectName);
-    $rawPath = __DIR__ . '/../projects/' . $projectDirectoryName;
+    $rawPath = REGIS_PROJECTS . $projectDirectoryName;
 
     return is_dir($rawPath) ? realpath($rawPath) : $rawPath;
 }

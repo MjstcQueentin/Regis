@@ -7,13 +7,12 @@
  * @author Quentin Pugeat <contact@quentinpugeat.fr>
  * @license MIT
  */
-require_once __DIR__ . '/core/autoload.php';
+require_once __DIR__ . '/../app/autoload.php';
 
-$projectsDir = __DIR__ . "/projects";
-$dirScan = scandir($projectsDir);
+$dirScan = scandir(REGIS_PROJECTS);
 
-$dirScan = array_filter($dirScan, function ($item) use ($projectsDir) {
-    return is_dir($projectsDir . '/' . $item) && substr($item, 0, 1) != '.';
+$dirScan = array_filter($dirScan, function ($item) {
+    return is_dir(REGIS_PROJECTS . '/' . $item) && substr($item, 0, 1) != '.';
 });
 ?>
 

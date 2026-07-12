@@ -7,10 +7,10 @@
  * @author Quentin Pugeat <contact@quentinpugeat.fr>
  * @license MIT
  */
-require_once __DIR__ . "/core/autoload.php";
+require_once __DIR__ . "/../app/autoload.php";
 
-use LesMajesticiels\Regis\Project;
-use LesMajesticiels\Regis\ProjectElement;
+use LesMajesticiels\Regis\Projects\Project;
+use LesMajesticiels\Regis\Projects\ProjectElement;
 
 $projectName = $_REQUEST["name"];
 $projectTitle = $_REQUEST["title"] ?? null;

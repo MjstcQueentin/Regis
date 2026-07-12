@@ -4,7 +4,7 @@
  * Page de paramètres de Régis
  * Permet de tester les permissions de popup et d'autoplay des vidéos du navigateur
  */
-require_once __DIR__ . '/core/autoload.php';
+require_once __DIR__ . '/../app/autoload.php';
 ?>
 
 <?php LesMajesticiels\Regis\View\ViewHandler::templateStart('default', [

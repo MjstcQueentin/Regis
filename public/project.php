@@ -8,10 +8,10 @@
  * @author Quentin Pugeat <contact@quentinpugeat.fr>
  * @license MIT
  */
-require_once __DIR__ . '/core/autoload.php';
+require_once __DIR__ . '/../app/autoload.php';
 
 $dir = $_GET['dir'];
-$project = new LesMajesticiels\Regis\Project($dir);
+$project = new LesMajesticiels\Regis\Projects\Project($dir);
 
 header('Last-Modified: ' . date('D, d M Y H:i:s', $project->getModifiedTime()) . ' GMT');
 ?>

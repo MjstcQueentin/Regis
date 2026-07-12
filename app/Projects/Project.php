@@ -1,6 +1,6 @@
 <?php
 
-namespace LesMajesticiels\Regis;
+namespace LesMajesticiels\Regis\Projects;
 
 /**
  * Représente un projet pour Regis.

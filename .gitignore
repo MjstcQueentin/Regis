@@ -2,8 +2,8 @@
 .vscode/
 
 # Project files
-projects/*
-!projects/.gitkeep
+public/projects/*
+!public/projects/.gitkeep
 
 # Apache configuration
 .htaccess
