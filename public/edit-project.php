@@ -12,9 +12,9 @@ require_once __DIR__ . "/../app/autoload.php";
 use LesMajesticiels\Regis\Projects\Project;
 use LesMajesticiels\Regis\Projects\ProjectElement;
 
-$projectName = $_REQUEST["name"];
+$projectDir = $_REQUEST["dir"];
 $projectTitle = $_REQUEST["title"] ?? null;
-$project = new Project($projectName, $projectTitle);
+$project = new Project($projectDir, $projectTitle);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // L'utilisateur modifie le projet
@@ -64,19 +64,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     http_response_code(303);
-    header("Location: /edit-project.php?action=edit&name=" . urlencode($projectName));
+    header("Location: /edit-project.php?action=edit&dir=" . urlencode($projectDir));
     exit();
 }
 ?>
 
 
-<?php LesMajesticiels\Regis\View\ViewHandler::templateStart("default", ["title" => "Modifier le projet " . $project->getTitle()]); ?>
+<?php LesMajesticiels\Regis\View\ViewHandler::templateStart("default", ["title" => "Modifier la composition du projet " . $project->getTitle()]); ?>
 
 <section class="container mb-3">
-    <h2>Modifier le projet "<?= htmlspecialchars($project->getTitle()) ?>"</h2>
+    <h2>Modifier la composition du projet "<?= htmlspecialchars($project->getTitle()) ?>"</h2>
 
     <div class="d-flex flex-row flex-wrap gap-1 border rounded p-2 mt-3">
-        <a href="/edit-medias.php?name=<?= urlencode($_GET["name"]) ?>" class="btn btn-primary">
+        <a href="/edit-medias.php?dir=<?= urlencode($projectDir) ?>" class="btn btn-primary">
             <i class="bi bi-collection-play"></i>
             <span>Ajouter ou supprimer des médias...</span>
         </a>
@@ -89,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php endif; ?>
 
         <?php if (!empty($project->getElements())): ?>
-            <a href="/project.php?dir=<?= urlencode($_GET["name"]) ?>" class="btn btn-success">
+            <a href="/project.php?dir=<?= urlencode($projectDir) ?>" class="btn btn-success">
                 <i class="bi bi-play"></i>
                 <span>Jouer !</span>
             </a>

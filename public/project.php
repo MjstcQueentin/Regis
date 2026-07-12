@@ -42,12 +42,12 @@ header('Last-Modified: ' . date('D, d M Y H:i:s', $project->getModifiedTime()) .
             <i class="bi bi-stop"></i> Remise à zéro
         </button>
 
-        <a href="/edit-medias.php?name=<?= urlencode($_GET["dir"]) ?>" class="btn btn-outline-secondary">
+        <a href="/edit-medias.php?dir=<?= urlencode($_GET["dir"]) ?>" class="btn btn-outline-secondary">
             <i class="bi bi-collection-play"></i>
             <span>Médias...</span>
         </a>
 
-        <a href="/edit-project.php?name=<?= urlencode($_GET["dir"]) ?>" class="btn btn-outline-secondary">
+        <a href="/edit-project.php?dir=<?= urlencode($_GET["dir"]) ?>" class="btn btn-outline-secondary">
             <i class="bi bi-pencil"></i>
             <span>Composition...</span>
         </a>

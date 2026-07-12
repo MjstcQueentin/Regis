@@ -7,6 +7,9 @@
  * @author Quentin Pugeat <contact@quentinpugeat.fr>
  * @license MIT
  */
+
+use LesMajesticiels\Regis\Projects\Project;
+
 require_once __DIR__ . '/../app/autoload.php';
 
 $dirScan = scandir(REGIS_PROJECTS);
@@ -34,21 +37,22 @@ $dirScan = array_filter($dirScan, function ($item) {
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($dirScan as $item): ?>
+                <?php foreach ($dirScan as $dir): ?>
+                <?php $item = new Project($dir); ?>
                     <tr>
                         <td>
-                            <a href="project.php?dir=<?= urlencode($item) ?>">
-                                <?= htmlspecialchars($item) ?>
+                            <a href="project.php?dir=<?= urlencode($dir) ?>">
+                                <?= htmlspecialchars($item->getTitle()) ?>
                             </a>
                         </td>
                         <td>
-                            <a class="btn btn-sm btn-link text-decoration-none" href="project.php?dir=<?= urlencode($item) ?>" title="Ouvrir le projet">
+                            <a class="btn btn-sm btn-link text-decoration-none" href="project.php?dir=<?= urlencode($dir) ?>" title="Ouvrir le projet">
                                 <i class="bi bi-play"></i> Jouer
                             </a>
-                            <a class="btn btn-sm btn-link text-decoration-none" href="edit-project.php?action=edit&name=<?= urlencode($item) ?>" title="Modifier le projet">
-                                <i class="bi bi-pencil"></i> Modifier...
+                            <a class="btn btn-sm btn-link text-decoration-none" href="edit-project.php?action=edit&dir=<?= urlencode($dir) ?>" title="Modifier le projet">
+                                <i class="bi bi-pencil"></i> Composition...
                             </a>
-                            <a class="btn btn-sm btn-link text-decoration-none" href="edit-medias.php?name=<?= urlencode($item) ?>" title="Gérer les médias du projet">
+                            <a class="btn btn-sm btn-link text-decoration-none" href="edit-medias.php?dir=<?= urlencode($dir) ?>" title="Gérer les médias du projet">
                                 <i class="bi bi-collection-play"></i> Médias...
                             </a>
                         </td>

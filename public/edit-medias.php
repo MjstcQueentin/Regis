@@ -11,8 +11,8 @@ require_once __DIR__ . "/../app/autoload.php";
 
 use LesMajesticiels\Regis\Projects\Project;
 
-$projectName = $_GET['name'];
-$project = new Project($projectName);
+$projectDir = $_REQUEST['dir'];
+$project = new Project($projectDir);
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $message = "Aucune action réalisée.";
@@ -63,19 +63,19 @@ $audios = $project->getMedias('audio');
 ?>
 
 
-<?php LesMajesticiels\Regis\View\ViewHandler::templateStart('default', ['title' => 'Gérer les médias du projet ' . $projectName]) ?>
+<?php LesMajesticiels\Regis\View\ViewHandler::templateStart('default', ['title' => 'Gérer les médias du projet ' . $projectDir]) ?>
 
 <section class="container mb-3">
-    <h2>Gérer les médias du projet "<?= htmlspecialchars($projectName) ?>"</h2>
+    <h2>Gérer les médias du projet "<?= htmlspecialchars($projectDir) ?>"</h2>
 
     <div class="d-flex flex-row flex-wrap gap-1 border rounded p-2 mt-3">
-        <a href="/edit-project.php?name=<?= urlencode($_GET["name"]) ?>" class="btn btn-primary">
+        <a href="/edit-project.php?dir=<?= urlencode($projectDir) ?>" class="btn btn-primary">
             <i class="bi bi-pencil"></i>
             <span>Composer le projet...</span>
         </a>
 
         <?php if (!empty($project->getElements())): ?>
-            <a href="/project.php?dir=<?= urlencode($_GET["name"]) ?>" class="btn btn-success">
+            <a href="/project.php?dir=<?= urlencode($projectDir) ?>" class="btn btn-success">
                 <i class="bi bi-play"></i>
                 <span>Jouer !</span>
             </a>
