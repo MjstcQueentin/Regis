@@ -5,7 +5,7 @@
         <a href="https://www.lesmajesticiels.org" target="_blank" rel="noopener noreferrer">Les Majesticiels</a>
     </div>
     <div>
-        <a href="https://github.com/MjstcQueentin/Regis" target="_blank" rel="noopener noreferrer">Code source</a>
+        <a href="https://tangled.org/quentinpugeat.fr/regis" target="_blank" rel="noopener noreferrer">Code source</a>
     </div>
 </footer>
 <script src="https://assets.lesmajesticiels.org/scripts/images-theme-toggler.js"></script>
