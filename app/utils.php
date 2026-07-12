@@ -10,8 +10,8 @@ function requireValidProjectName($projectName)
 {
     if (empty($projectName)) {
         http_response_code(303);
-        header('Location: /index.php');
-        exit;
+        header("Location: /index.php");
+        exit();
     }
 
     $projectDirectoryName = projectNameToDirectoryName($projectName);
@@ -19,8 +19,8 @@ function requireValidProjectName($projectName)
 
     if (!is_dir($projectDir)) {
         http_response_code(303);
-        header('Location: /index.php');
-        exit;
+        header("Location: /index.php");
+        exit();
     }
 }
 
@@ -31,10 +31,22 @@ function requireValidProjectName($projectName)
  */
 function projectNameToDirectoryName(string $projectName): string
 {
-    if (empty($projectName)) throw new InvalidArgumentException("Le nom du projet ne peut pas être vide.");
+    if (empty($projectName)) {
+        throw new InvalidArgumentException(
+            "Le nom du projet ne peut pas être vide.",
+        );
+    }
 
-    $projectName = strtr($projectName, 'àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ', 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
-    $projectName = str_replace([' ', '_', '/', '\\', '&'], ['-', '-', '-', '-', '-'], $projectName);
+    $projectName = strtr(
+        $projectName,
+        "àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ",
+        "aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY",
+    );
+    $projectName = str_replace(
+        [" ", "_", "/", "\\", "&"],
+        ["-", "-", "-", "-", "-"],
+        $projectName,
+    );
     return strtolower($projectName);
 }
 
@@ -45,10 +57,27 @@ function projectNameToDirectoryName(string $projectName): string
  */
 function projectDirectoryPath(string $projectName): string
 {
-    if (empty($projectName)) throw new InvalidArgumentException("Le nom du projet ne peut pas être vide.");
+    if (empty($projectName)) {
+        throw new InvalidArgumentException(
+            "Le nom du projet ne peut pas être vide.",
+        );
+    }
 
     $projectDirectoryName = projectNameToDirectoryName($projectName);
     $rawPath = REGIS_PROJECTS . $projectDirectoryName;
 
     return is_dir($rawPath) ? realpath($rawPath) : $rawPath;
+}
+
+function volumeIcon(float $volume): string
+{
+    if ($volume == 0) {
+        $volumeClass = "volume-mute";
+    } elseif ($volume < 0.5) {
+        $volumeClass = "bi-volume-down";
+    } else {
+        $volumeClass = "bi-volume-up";
+    }
+
+    return '<i class="bi ' . $volumeClass . '"></i>';
 }

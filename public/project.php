@@ -13,7 +13,7 @@ require_once __DIR__ . '/../app/autoload.php';
 $dir = $_GET['dir'];
 $project = new LesMajesticiels\Regis\Projects\Project($dir);
 
-header('Last-Modified: ' . date('D, d M Y H:i:s', $project->getModifiedTime()) . ' GMT');
+// header('Last-Modified: ' . date('D, d M Y H:i:s', $project->getModifiedTime()) . ' GMT');
 ?>
 
 <?php LesMajesticiels\Regis\View\ViewHandler::templateStart('default', [
@@ -55,55 +55,52 @@ header('Last-Modified: ' . date('D, d M Y H:i:s', $project->getModifiedTime()) .
 </section>
 
 <section>
-    <div class="table-responsive container">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th scope="col">Scene</th>
-                    <th scope="col">Title and cues</th>
-                    <th scope="col">Player</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($project->getElements() as $elementObject): ?>
-                    <?php $element = $elementObject->__toArray(); ?>
-                    <tr>
-                        <td>
-                            <?= htmlspecialchars($element['scene']) ?>
-                        </td>
-                        <td>
-                            <b><?= htmlspecialchars($element['title']) ?></b><br>
-                            <i><?= nl2br(htmlspecialchars(trim($element['description']))) ?></i>
-                        </td>
-                        <td>
-                            <?php if (!is_file($project->getPath($element['src']))): ?>
-                                <div class="alert alert-danger m-0 py-2">
-                                    Fichier invalide !
-                                </div>
-                            <?php elseif (substr($element['type'], 0, stripos($element['type'], '/')) == "audio"): ?>
-                                <audio controls class="w-100" preload="auto" <?= $element['loop'] ? 'loop' : '' ?>
-                                    <?= !empty($element['volume']) ? 'volume="' . $element['volume'] . '"' : '' ?>
-                                    src="/projects/<?= htmlspecialchars($dir) ?>/<?= htmlspecialchars($element['src']) ?>"></audio>
-                            <?php else: ?>
-                                <div class="d-flex flex-row gap-2 align-items-center">
-                                    <button class="btn btn-primary" data-trigger="video-play"
-                                        data-video="/projects/<?= htmlspecialchars($dir) ?>/<?= htmlspecialchars($element['src']) ?>"
-                                        <?= !empty($element['loop']) ? 'data-loop="true"' : '' ?>>
-                                        <i class="bi bi-play-fill"></i> Lancer
-                                    </button>
-                                    <button class="btn btn-secondary" data-trigger="video-stop">
-                                        <i class="bi bi-stop-fill"></i> Arrêter
-                                    </button>
-                                </div>
-                            <?php endif; ?>
-                            <?php if (!empty($element['hint'])) : ?>
-                                <br><i><?= nl2br(htmlspecialchars(trim($element['hint']))) ?></i>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+    <div class="mx-5">
+        <?php foreach ($project->getElements() as $elementObject): ?>
+            <?php $element = $elementObject->__toArray(); ?>
+
+            <div class="row border rounded py-2 mb-2">
+                <div class="col-sm-1">
+                    <span class="badge text-uppercase text-bg-primary"><?= htmlspecialchars($element['scene']) ?></span>
+                </div>
+                <div class="col-sm-7">
+                    <h5 class="fw-bold fs-6 mb-1"><?= htmlspecialchars($element['title']) ?></h5>
+                    <p class="small m-0"><?= nl2br(htmlspecialchars(trim($element['description']))) ?></p>
+                    <?php if (!empty($element['hint'])) : ?>
+                        <p class="small text-muted m-0"><?= nl2br(htmlspecialchars(trim($element['hint']))) ?></p>
+                    <?php endif; ?>
+                </div>
+                <div class="col-sm-4">
+                    <?php if (!is_file($project->getPath($element['src']))): ?>
+                        <div class="alert alert-danger m-0 py-2">
+                            Fichier invalide !
+                        </div>
+                    <?php elseif (substr($element['type'], 0, stripos($element['type'], '/')) == "audio"): ?>
+                        <audio controls class="w-100" preload="auto" <?= $element['loop'] ? 'loop' : '' ?>
+                            <?= !empty($element['volume']) ? 'volume="' . $element['volume'] . '"' : '' ?>
+                            src="/projects/<?= htmlspecialchars($dir) ?>/<?= htmlspecialchars($element['src']) ?>"></audio>
+                    <?php else: ?>
+                        <div class="d-flex flex-row gap-1 align-items-center">
+                            <button class="btn btn-sm btn-primary" data-trigger="video-play"
+                                data-video="/projects/<?= htmlspecialchars($dir) ?>/<?= htmlspecialchars($element['src']) ?>"
+                                <?= !empty($element['loop']) ? 'data-loop="true"' : '' ?>>
+                                <i class="bi bi-play-fill"></i> Lancer
+                            </button>
+                            <button class="btn btn-sm btn-secondary" data-trigger="video-stop">
+                                <i class="bi bi-stop-fill"></i> Arrêter
+                            </button>
+                        </div>
+                    <?php endif; ?>
+
+                    <span class="badge text-uppercase text-bg-secondary"><?= volumeIcon($element['volume'] || 1) ?> <?= (($element['volume'] || 1) * 100) ?> &percnt;</span>
+                    <?php if($element['loop']): ?>
+                        <span class="badge text-uppercase text-bg-info">
+                            <i class="bi bi-arrow-repeat"></i> En boucle
+                        </span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
     </div>
 </section>
 

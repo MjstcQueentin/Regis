@@ -136,8 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <span class="badge bg-secondary"><?= htmlspecialchars($elementArray["type"]) ?></span>
 
                         <?php if (!empty($elementArray["volume"])): ?>
-                            <?php $volumeClass = $elementArray["volume"] < 0.5 ? "bi-volume-down" : "bi-volume-up"; ?>
-                            <span class="badge bg-secondary" data-volume="<?= $elementArray["volume"] ?>" title="Niveau du volume"><i class="bi <?= $volumeClass ?>"></i> <?= number_format($elementArray["volume"] * 100, 0) ?>%</span>
+                            <span class="badge bg-secondary" data-volume="<?= $elementArray["volume"] ?>" title="Niveau du volume"><?= volumeIcon($elementArray["volume"]) ?> <?= number_format($elementArray["volume"] * 100, 0) ?>%</span>
                         <?php else: ?>
                             <span class="badge bg-secondary" data-volume="1" title="Niveau du volume"><i class="bi bi-volume-up"></i> 100%</span>
                         <?php endif; ?>
