@@ -6,15 +6,15 @@ use LesMajesticiels\Regis\View\ViewHandler;
 <html lang="fr">
 
 <head>
-    <?= ViewHandler::renderPartial('head', ['title' => $title ?? '']) ?>
+    <?php ViewHandler::renderPartial('head', ['title' => $title ?? '']); ?>
 </head>
 
 <body data-bs-theme="<?= $_COOKIE['bs-theme'] ?? 'light' ?>" <?= !empty($autoshowVideoPlayer) ? 'autoshow-video-player' : '' ?>>
-    <?= ViewHandler::renderPartial('header') ?>
+    <?php ViewHandler::renderPartial('header'); ?>
 
-    <?= $buffer ?>
+    <?= !empty($buffer) ? $buffer : "" ?>
 
-    <?= ViewHandler::renderPartial('footer') ?>
+    <?php ViewHandler::renderPartial('footer'); ?>
 </body>
 
 </html>

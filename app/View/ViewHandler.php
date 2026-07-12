@@ -6,7 +6,7 @@ use Exception;
 
 /**
  * This class is responsible for outputing templates and partials.
- * 
+ *
  * @author Quentin Pugeat <contact@quentinpugeat.fr>
  * @version 1.0.0
  */
@@ -17,8 +17,8 @@ class ViewHandler
 
     /**
      * Output a template with the given data.
-     * 
-     * @param string $template The template to output (without the .php extension).
+     *
+     * @param string $viewfile The template to output (without the .php extension).
      * @param array $data The data to pass to the template.
      * @return void
      * @throws Exception If the template does not exist.
