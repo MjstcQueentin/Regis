@@ -1,34 +1,43 @@
-![Logo de Régis](https://www.lesmajesticiels.org/assets/logos/smaller/regis.png "Régis")
+![Régis Logo](https://www.lesmajesticiels.org/assets/logos/smaller/regis.png "Régis")
 
-# Régis
+# Régis Server
 
-Régis est un logiciel développé pour [Drama-Tea'c Circus](https://www.dramateaccircus.fr), pour le lancement de sons et de vidéos sur vidéoprojecteur pendant des représentations théâtrales.
+Régis Server is a platform developed for [Drama-Tea'c Circus](https://www.dramateaccircus.fr), designed to facilitate the playback of audio and video via a video projector during theatre performances.
 
-Il est conçu pour être résilient et utilisable avec le matériel le plus rudimentaire : seul un navigateur Web moderne est requis. Ainsi, peu importe le lieu de représentation et l'appareil utilisé, le résultat sur scène sera le même.
+It is designed to work with the most basic equipment: all you need is a modern web browser. This means that, regardless of the venue or the device used, the result on stage will be the same.
 
-## Déploiement
+## Are you looking for the desktop version?
 
-Deux méthodes s'offrent à vous :
+Régis also exists as a standalone application for you to enjoy on your computer. Visit [lesmajesticiels.org/regis](https://www.lesmajesticiels.org/regis) to learn more.
+
+## Deployment
+
+There are two ways to deploy Régis Server.
 
 ### Docker
 
-Construisez une image Docker à partir du Dockerfile fourni dans ce dépôt. Utile pour un lancement rapide de l'appli sur votre infrastructure.
+Build a Docker image from the Dockerfile provided in this repository. Useful for quickly getting the app up and running on your infrastructure.
 
-### Déploiement avancé
+### Manual installation
 
-Déployez un serveur Web avec les dépendances qui suivent :
+Deploy a web server that supports PHP 8.4 (or later) with the libxml module.
 
-- Apache ou nginx
-- PHP 8.4 ou supérieur avec le module libxml
+Clone this repository and copy the files to the root directory.
 
-Clonez ce dépôt et copiez les fichiers à la racine.
+Ensure that the web server user has write access to the ./projects directory.
 
-Prenez garde à ce que l'utilisateur du serveur web ait le droit d'écrire dans le répertoire ./projects
+## Safety
 
-## Sécurité
+As things stand, Régis has no security measures in place to prevent unauthorised access. I recommend implementing basic authentication on the web server in order to restrict access to the tool.
 
-Dans son état actuel, Régis ne dispose d'aucune sécurité contre les intrusions. Je recommande de mettre en place une authentification basique sur le serveur Web afin de filtrer les usagers de l'outil.
+## About Drama-Tea'c Circus
 
-## À propos de Drama-Tea'c Circus
+We are an English-speaking theatre company based in Besançon, France, whose aim is to promote theatre amongst international students. Every year, we create an original production in all its forms: script, costumes, direction, sound and lighting…
 
-Nous sommes une troupe de théâtre anglophone, située à Besançon, avec pour objectif de promouvoir la pratique du théâtre auprès du public étudiant. Chaque année, nous composons une création originale sous toutes ses formes : texte, costumes, mise en scène, son et lumière...
+![Logo de Drama-Tea'c Circus](https://www.dramateaccircus.fr/assets/logos/drama-teac-circus-128.png)
+
+## Les Majesticiels
+
+Régis is part of Les Majesticiels, a project from Quentin Pugeat, whose mission is to provide tools making computing easier for everyone.
+
+[![Les Majesticiels](https://www.lesmajesticiels.org/assets/logos/smaller/lesmajesticiels.png "Les Majesticiels")](https://www.lesmajesticiels.org/)
